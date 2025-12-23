@@ -2,7 +2,7 @@
 
 A fully-templated red black tree in C, which can be used as a dictionary or a set.  Like like stl map, in C, as a single-file header, with convenience functionality for strings, ints, and indexing.
 
-It has a particular focus on versatility and runtime speed.  For instance, it uses the while-style operations instead of recursive operations for speed, and all things like pointer compares are templated into the macro-generated code instead of using function pointers.
+It has a particular focus on versatility and runtime speed, at the cost of code size.  For instance, it uses the while-style operations instead of recursive operations for speed, and all things like pointer compares are templated into the macro-generated code instead of using function pointers.
 
 All as a single-file header, which you can use like:
 
@@ -21,6 +21,8 @@ It has a number of conveniences like `RBHAS` and `RBA` to, in a type-ambivelant 
      else
         RBA( mytree, mykey ) = 1;
 ```
+
+While I've been using this library all over my programming professionally and personally since about 2019, that doesn't mean there can't be bugs.  If you find any, please report them, along with a repro if at all possible.
 
 ## Example
 
