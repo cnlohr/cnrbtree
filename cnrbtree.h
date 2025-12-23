@@ -189,7 +189,7 @@
 //Shorthand for red-black access, and typesafe deletion.
 #ifndef NO_RBA
 #define RBA(x,y) (x->access)( x, y )->data
-#define RBHAS(x,y) ((x->get)( x, y ))
+#define RBHAS(x,y) (!!(x->get)( x, y ))
 #define RBGET(x,y) ((x->get)( x, y ))
 #define RBDESTROY(x) (x->destroy)( x )
 #define RBREMOVE(x,y) (cnrbtree_generic_removebase(RBTREEPUN(cnrbtree_generic*, typeof(x), x), RBTREEPUN(cnrbtree_generic_node*, typeof(y), y)))
@@ -794,7 +794,7 @@ typedef char rbset_null_t[];
 #endif
 
 typedef cnrbtree_rbset_trbset_null_t cnptrset;
-#define cnptrset_create() cnrbtree_rbset_trbset_null_t_create(void)
+#define cnptrset_create() cnrbtree_rbset_trbset_null_t_create()
 #define cnptrset_insert( st, key ) cnrbtree_rbset_trbset_null_t_access( st, key )
 #define cnptrset_remove( st, key ) cnrbtree_rbset_trbset_null_t_remove( st, key )
 #define cnptrset_destroy( st ) cnrbtree_rbset_trbset_null_t_destroy( st )
@@ -810,33 +810,34 @@ typedef cnrbtree_rbset_trbset_null_t cnptrset;
 typedef char * rbstrset_t;
 #ifdef CNRBTREE_IMPLEMENTATION
 	CNRBTREETEMPLATE( rbstrset_t, rbset_null_t, RBstrcmp, RBstrcpy, RBstrdel )
-	CNRBTREETEMPLATE( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel )
+	CNRBTREETEMPLATE( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy,  )
 #else
 	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBstrdel )
-	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel )
+	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy,  )
 #endif
 
+
 typedef cnrbtree_rbstrset_trbset_null_t cnstrset;
-#define cnstrset_create() cnrbtree_rbstrset_trbset_null_t_create(void)
+#define cnstrset_create() cnrbtree_rbstrset_trbset_null_t_create()
 #define cnstrset_insert( st, key ) cnrbtree_rbstrset_trbset_null_t_access( st, key )
 #define cnstrset_remove( st, key ) cnrbtree_rbstrset_trbset_null_t_remove( st, key )
 #define cnstrset_destroy( st ) cnrbtree_rbstrset_trbset_null_t_destroy( st )
 //Note, you need a pre-defined char * for the type in the iteration. i.e. char * i; cnstrfset_foreach( tree, i );
 #define cnstrset_foreach( tree, i ) \
 	for( cnrbtree_rbstrset_trbset_null_t_node * node##i = tree->begin; \
-		i = (node##i)->key, node##i != &cnrbtree_nil; \
+		i = (node##i)->key, &(node##i)->g != &cnrbtree_nil; \
 		node##i = (cnrbtree_rbstrset_trbset_null_t_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)node##i ) )
 
 
 typedef cnrbtree_rbstrset_trbstrset_t cnstrstrmap;
-#define cnstrstrmap_create() cnrbtree_rbstrset_trbstrset_t_create(void)
+#define cnstrstrmap_create() cnrbtree_rbstrset_trbstrset_t_create()
 #define cnstrstrmap_insert( st, key ) cnrbtree_rbstrset_trbstrset_t_access( st, key )
 #define cnstrstrmap_remove( st, key ) cnrbtree_rbstrset_trbstrset_t_remove( st, key )
 #define cnstrstrmap_destroy( st ) cnrbtree_rbstrset_trbstrset_t_destroy( st )
 //Note, you need a pre-defined char * for the type in the iteration. i.e. char * i; cnstrfset_foreach( tree, i );
-#define cnstrstrmap_foreach( tree, i ) \
+#define cnstrstrmap_foreach( tree, i, d ) \
 	for( cnrbtree_rbstrset_trbstrset_t_node * node##i = tree->begin; \
-		i = (node##i)->key, node##i != &cnrbtree_nil; \
+		i = (node##i)->key, d = (node##i)->data, &(node##i)->g != &cnrbtree_nil; \
 		node##i = (cnrbtree_rbstrset_trbstrset_t_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)node##i ) )
 
 #endif

@@ -1,30 +1,3 @@
-# cnrbtree
-
-A fully-templated red black tree in C, which can be used as a dictionary or a set.  Like like stl map, in C, as a single-file header, with convenience functionality for strings, ints, and indexing.
-
-It has a particular focus on versatility and runtime speed.  For instance, it uses the while-style operations instead of recursive operations for speed, and all things like pointer compares are templated into the macro-generated code instead of using function pointers.
-
-All as a single-file header, which you can use like:
-
-```c
-#include <...>
-#include <...>
-#define CNRBTREE_IMPLEMENTATION
-#include "cnrbtree.h"
-```
-
-It has a number of conveniences like `RBHAS` and `RBA` to, in a type-ambivelant way ask a tree if it has a specific element, or, to be able to inline access a specific element.
-
-```c
-     if( RBHAS( mytree, mykey ) )
-        RBA( mytree, mykey )++;
-     else
-        RBA( mytree, mykey ) = 1;
-```
-
-## Example
-
-```c
 #include <stdio.h>
 
 #define CNRBTREE_IMPLEMENTATION
@@ -37,7 +10,7 @@ typedef struct object_t
 typedef char * str;
 CNRBTREETEMPLATE( str, object, RBstrcmp, RBstrcpy, RBstrdel );
 
-int main()
+int main(void)
 {
 	char * si, * sd;
 
@@ -98,5 +71,4 @@ int main()
 
 	return 0;
 }
-```
 

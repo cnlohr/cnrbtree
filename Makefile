@@ -6,8 +6,12 @@ testtree : testtree.c
 # -fno-strict-aliasing
 # -fsanitize=type 
 
-test : testtree
+simple : simple.c
+	gcc -o $@ $^ -Os -g
+
+test : testtree simple
 	./testtree
+	./simple
 
 clean :
 	rm -rf *.o *~ testtree
