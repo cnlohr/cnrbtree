@@ -24,6 +24,10 @@ It has a number of conveniences like `RBHAS` and `RBA` to, in a type-ambivelant 
 
 While I've been using this library all over my programming professionally and personally since about 2019, that doesn't mean there can't be bugs.  If you find any, please report them, along with a repro if at all possible.
 
+## License notes
+
+For Github I put the LICENSE file as MIT, but, you may freely license the code under the Unlicense, MIT, any BSD files, or if possible in your legal jurisdiction, public domain.
+
 ## Example
 
 ```c
