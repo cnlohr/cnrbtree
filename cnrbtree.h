@@ -737,7 +737,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 		CNRBTREE_FREE( tree ); \
 	} \
 	\
-	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t * cnrbtree_##key_t##data_t##_create() \
+	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t * cnrbtree_##key_t##data_t##_create(void) \
 	{\
 		cnrbtree_##key_t##data_t * ret = CNRBTREE_MALLOC( sizeof( cnrbtree_##key_t##data_t ) ); \
 		cnrbtree_##key_t##data_t##_node * nil = RBTREEPUN( cnrbtree_##key_t##data_t##_node *, cnrbtree_generic_node *, &cnrbtree_nil ); \
@@ -786,7 +786,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 
 //Code for pointer-sets (cnptrset) - this is only for void *
 typedef void * rbset_t;
-typedef char rbset_null_t[0];
+typedef char rbset_null_t[];
 #ifdef CNRBTREE_IMPLEMENTATION
 	CNRBTREETEMPLATE( rbset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBnullop )
 #else
@@ -794,7 +794,7 @@ typedef char rbset_null_t[0];
 #endif
 
 typedef cnrbtree_rbset_trbset_null_t cnptrset;
-#define cnptrset_create() cnrbtree_rbset_trbset_null_t_create()
+#define cnptrset_create() cnrbtree_rbset_trbset_null_t_create(void)
 #define cnptrset_insert( st, key ) cnrbtree_rbset_trbset_null_t_access( st, key )
 #define cnptrset_remove( st, key ) cnrbtree_rbset_trbset_null_t_remove( st, key )
 #define cnptrset_destroy( st ) cnrbtree_rbset_trbset_null_t_destroy( st )
@@ -817,7 +817,7 @@ typedef char * rbstrset_t;
 #endif
 
 typedef cnrbtree_rbstrset_trbset_null_t cnstrset;
-#define cnstrset_create() cnrbtree_rbstrset_trbset_null_t_create()
+#define cnstrset_create() cnrbtree_rbstrset_trbset_null_t_create(void)
 #define cnstrset_insert( st, key ) cnrbtree_rbstrset_trbset_null_t_access( st, key )
 #define cnstrset_remove( st, key ) cnrbtree_rbstrset_trbset_null_t_remove( st, key )
 #define cnstrset_destroy( st ) cnrbtree_rbstrset_trbset_null_t_destroy( st )
@@ -829,7 +829,7 @@ typedef cnrbtree_rbstrset_trbset_null_t cnstrset;
 
 
 typedef cnrbtree_rbstrset_trbstrset_t cnstrstrmap;
-#define cnstrstrmap_create() cnrbtree_rbstrset_trbstrset_t_create()
+#define cnstrstrmap_create() cnrbtree_rbstrset_trbstrset_t_create(void)
 #define cnstrstrmap_insert( st, key ) cnrbtree_rbstrset_trbstrset_t_access( st, key )
 #define cnstrstrmap_remove( st, key ) cnrbtree_rbstrset_trbstrset_t_remove( st, key )
 #define cnstrstrmap_destroy( st ) cnrbtree_rbstrset_trbstrset_t_destroy( st )

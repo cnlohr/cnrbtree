@@ -26,7 +26,7 @@ typedef char * str_;
 CNRBTREETEMPLATE( str_ , payload, RBstrcmp, tstrcopy, RBstrdel )
 CNRBTREETEMPLATE( str_ , int, RBstrcmp, RBstrcpy, tstrdelete )
 
-int anotherfn()
+int anotherfn(void)
 {
 	cnrbtree_str_payload  * tree = cnrbtree_str_payload_create();
 
@@ -129,7 +129,7 @@ int PrintTree( cnrbtree_intint_node * t, int depth, cnrbtree_intint_node * paren
 	*/
 }
 
-int main()
+int main(void)
 {
 	{
 		cnrbtree_strstr * tree = cnrbtree_strstr_create();
@@ -285,7 +285,6 @@ int main()
 
 	}
 
-int anotherfn();
 	anotherfn();
 	fprintf( stderr, "OK\n" );
 }
