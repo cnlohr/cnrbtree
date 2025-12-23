@@ -174,12 +174,13 @@ int main()
 				free( n->data );
 				cnrbtree_strstr_remove( tree, stta[i] );
 			}
-asm volatile( "" : : : "memory" );
+
 			if( !RBISNIL( tree->node ) )
 			{
 				printf( "Excess fault %p\n", (void*)tree->node );
 				exit( 6 );
 			}
+
 			if( tree->size != 0 )
 			{
 				printf( "Size violation. %d\n", tree->size );
@@ -190,7 +191,6 @@ asm volatile( "" : : : "memory" );
 
 		cnrbtree_strstr_destroy( tree );
 		printf( "OK\n" );
-
 	}
 	{
 		cnrbtree_intint * tree;
@@ -212,7 +212,6 @@ asm volatile( "" : : : "memory" );
 					printf( "Duplicate.  Try again.\n" );
 					goto retry;
 				}
-
 				cnrbtree_intint_access( tree, addlist[i] )->data = 80;
 				// Could also be
 				//RBA( tree, addlist[i] ) = 80;
@@ -226,6 +225,7 @@ asm volatile( "" : : : "memory" );
 				exit( 5 );
 			}
 			printf( "FINAL TREE BEFORE REMOVAL\n" );
+
 			PrintTree( tree->node, 0, tree->node->parent );
 
 			for( i = 0; i < ITERATIONS; i++ )
@@ -276,7 +276,7 @@ asm volatile( "" : : : "memory" );
 
 		if( gints != 0 )
 		{
-			printf( "gints fault\n" );
+			printf( "gints fault (%d)\n", gints );
 			exit( -6 );
 		}
 	}
