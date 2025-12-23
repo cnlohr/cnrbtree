@@ -193,7 +193,7 @@
 #define RBGET(x,y) ((x->get)( x, y ))
 #define RBDESTROY(x) (x->destroy)( x )
 #define RBREMOVE(x,y) (cnrbtree_generic_removebase(RBTREEPUN(cnrbtree_generic*, typeof(x), x), RBTREEPUN(cnrbtree_generic_node*, typeof(y), y)))
-#define RBFOREACH( type, tree, i ) for( cnrbtree_##type##_node * i = tree->begin; !RBISNIL( i ); i = (cnrbtree_##type##_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)i ) )
+#define RBFOREACH( type, tree, i ) for( cnrbtree_##type##_node * i = tree->begin; !RBISNIL( i ); i = RBTREEPUN( cnrbtree_##type##_node *, cnrbtree_generic_node *, cnrbtree_generic_next( RBTREEPUN( cnrbtree_generic_node *, cnrbtree_##type##_node *, i ) ) ) )
 #endif
 
 #define RBTREEPUN(to, from, value) \
