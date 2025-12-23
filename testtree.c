@@ -23,8 +23,8 @@ typedef struct some_payload_t
 } payload;
 typedef char * str_;
 
-CNRBTREETEMPLATE( str_ , payload, RBstrcmp, tstrcopy, RBstrdel );
-CNRBTREETEMPLATE( str_ , int, RBstrcmp, RBstrcpy, tstrdelete );
+CNRBTREETEMPLATE( str_ , payload, RBstrcmp, tstrcopy, RBstrdel )
+CNRBTREETEMPLATE( str_ , int, RBstrcmp, RBstrcpy, tstrdelete )
 
 int anotherfn()
 {
@@ -68,11 +68,13 @@ int gints = 0;
 #define intdelete( x, y )     gints--;
 
 #define intcomp(x, y) ( x - y )
-#define strtest( x, y ) ((*((int64_t*)x)) == (*((int64_t*)y))?0: (((*((int64_t*)x)) - (*((int64_t*)y)))) < 0 ? - 1 : 1 )
+
+// an unalign-unsafe-version of RBstrcmp
+//#define strtest( x, y ) ((*((int64_t*)x)) == (*((int64_t*)y))?0: (((*((int64_t*)x)) - (*((int64_t*)y)))) < 0 ? - 1 : 1 )
 
 typedef char * str;
-CNRBTREETEMPLATE( int, int, intcomp, intcopy, intdelete );
-CNRBTREETEMPLATE( str, str, /*RBstrcmp*/ strtest, RBstrcpy, RBstrdel );
+CNRBTREETEMPLATE( int, int, intcomp, intcopy, intdelete )
+CNRBTREETEMPLATE( str, str, RBstrcmp, RBstrcpy, RBstrdel )
 
 int PrintTree( cnrbtree_intint_node * t, int depth, cnrbtree_intint_node * parent );
 
@@ -100,7 +102,7 @@ int PrintTree( cnrbtree_intint_node * t, int depth, cnrbtree_intint_node * paren
 		printf( "%*s-\n", depth*4, "" );
 		return 1;
 	}
-	printf( "%*s%d %d (%p) PARENT: %p\n", depth*4, "", t->key, t->color, t, t->parent );
+	printf( "%*s%d %d (%p) PARENT: %p\n", depth*4, "", t->key, t->color, (void*)t, (void*)t->parent );
 	int d1 = PrintTree( t->left, stordepth+1, t );
 	int d2 = PrintTree( t->right, stordepth+1, t );
 	if( d1 != d2 && stordepth >= 0 )
@@ -115,7 +117,7 @@ int PrintTree( cnrbtree_intint_node * t, int depth, cnrbtree_intint_node * paren
 	}
 	if( stordepth >= 0 && t->parent != parent )
 	{
-		fprintf( stderr, "Parent fault [%p %p]\n", t->parent, parent );
+		fprintf( stderr, "Parent fault [%p %p]\n", (void*)t->parent, (void*)parent );
 		exit( 1);
 	}
 	return (depth < 0)?-1:(d1 + (t->color == CNRBTREE_COLOR_BLACK));
@@ -172,9 +174,10 @@ int main()
 				free( n->data );
 				cnrbtree_strstr_remove( tree, stta[i] );
 			}
+asm volatile( "" : : : "memory" );
 			if( !RBISNIL( tree->node ) )
 			{
-				printf( "Excess fault %p\n", tree->node );
+				printf( "Excess fault %p\n", (void*)tree->node );
 				exit( 6 );
 			}
 			if( tree->size != 0 )
@@ -185,6 +188,7 @@ int main()
 
 		}
 
+		cnrbtree_strstr_destroy( tree );
 		printf( "OK\n" );
 
 	}

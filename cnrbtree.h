@@ -193,7 +193,7 @@
 #define RBGET(x,y) ((x->get)( x, y ))
 #define RBDESTROY(x) (x->destroy)( x )
 #define RBREMOVE(x,y) (cnrbtree_generic_removebase((cnrbtree_generic*)(x),(cnrbtree_generic_node*)(y)))
-#define RBFOREACH( type, tree, i ) for( cnrbtree_##type##_node * i = tree->begin; !RBISNIL( i ); i = (cnrbtree_##type##_node *)cnrbtree_generic_next( (cnrbtree_generic*)tree, (cnrbtree_generic_node *)i ) )
+#define RBFOREACH( type, tree, i ) for( cnrbtree_##type##_node * i = tree->begin; !RBISNIL( i ); i = (cnrbtree_##type##_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)i ) )
 #endif
 
 #ifdef CNRBTREE_IMPLEMENTATION
@@ -228,8 +228,8 @@ typedef struct cnrbtree_generic_t
 
 CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * t, cnrbtree_generic_node * n );
 CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_insert_repair_tree_with_fixup_primary( cnrbtree_generic_node * tmp, cnrbtree_generic * tree, int cmp, int sizetoalloc );
-CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_next( cnrbtree_generic *tree ,cnrbtree_generic_node * node );
-CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_prev( cnrbtree_generic *tree ,cnrbtree_generic_node * node );
+CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_next( cnrbtree_generic_node * node );
+CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_prev( cnrbtree_generic_node * node );
 
 extern struct cnrbtree_generic_node_t cnrbtree_nil;
 
@@ -247,7 +247,7 @@ struct cnrbtree_generic_node_t cnrbtree_nil = {
 // after significant testing, it seems to provide an edge over
 // writing node->parent over and over when it should just be
 // stored to a temporary register.
-CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_next( cnrbtree_generic *tree, cnrbtree_generic_node * node )
+CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_next( cnrbtree_generic_node * node )
 {
 	//Local reference, for compilers which don't know optimize global references well.
 	cnrbtree_generic_node * nil = &cnrbtree_nil;
@@ -270,7 +270,7 @@ CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_next( cnrbtr
 }
 
 
-CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_prev( cnrbtree_generic * tree, cnrbtree_generic_node * node )
+CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_prev( cnrbtree_generic_node * node )
 {
 	cnrbtree_generic_node * nil = &cnrbtree_nil;
 	cnrbtree_generic_node * tmp;
@@ -292,7 +292,7 @@ CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_prev( cnrbtr
 	return tmp;
 }
 
-CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_rotateleft( cnrbtree_generic * tree, cnrbtree_generic_node * n )
+CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_rotateleft( cnrbtree_generic_node * n )
 {
 	/* From Wikipedia's RB Tree Page, seems slightly better than the CLRS model, but now that it's been
 		modified, there seems to be very little difference between them. */
@@ -317,7 +317,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_rotateleft( cnrbtree_generic * 
 	nnew->parent = p;
 }
 
-CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_rotateright( cnrbtree_generic * tree, cnrbtree_generic_node * n )
+CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_rotateright( cnrbtree_generic_node * n )
 {
 	/* From Wikipedia's RB Tree Page */
 	cnrbtree_generic_node * nil = &cnrbtree_nil;
@@ -364,14 +364,14 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_insert_repair_tree_with_fixup( 
 			//Case 2 XXX Should we check cnrbtree_nil here?
 			if( zp == zpp->left && z == zp->right )
 			{
-				cnrbtree_generic_rotateleft( tree, zp );
+				cnrbtree_generic_rotateleft( zp );
 				z = zp;
 				zp = z->parent;
 				zpp = zp->parent;
 			}
 			else if( zp == zpp->right && z == zp->left )
 			{
-				cnrbtree_generic_rotateright( tree, zp );
+				cnrbtree_generic_rotateright( zp );
 				z = zp;
 				zp = z->parent;
 				zpp = zp->parent;
@@ -384,9 +384,9 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_insert_repair_tree_with_fixup( 
 			{
 				zpp->color = CNRBTREE_COLOR_RED;
 				if( zpp->left == zp )
-					cnrbtree_generic_rotateright( tree, zpp );
+					cnrbtree_generic_rotateright( zpp );
 				else
-					cnrbtree_generic_rotateleft( tree, zpp );
+					cnrbtree_generic_rotateleft( zpp );
 			}
 		}
 	}
@@ -409,7 +409,6 @@ CNRBTREE_GENERIC_DECORATOR cnrbtree_generic_node * cnrbtree_generic_insert_repai
 
 	/* Tricky shortcut for empty lists */
 	tree->size++;
-printf( "%d\n", tree->size );
 
 	if( tree->node == nil )
 	{
@@ -467,9 +466,9 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 	T->size--;
 
 	if(z == T->begin)
-		T->begin = cnrbtree_generic_next(T, z);
+		T->begin = cnrbtree_generic_next(z);
 	if(z == T->tail)
-		T->tail = cnrbtree_generic_prev(T, z);
+		T->tail = cnrbtree_generic_prev(z);
 
 	cnrbtree_generic_node * nil = &cnrbtree_nil;
 	cnrbtree_generic_node * x;
@@ -489,7 +488,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 	else
 	{
 		// XXX How is it possible that this never fails?! I would have expected to need to check if nil and if so, do cnrbtree_generic_prev.
-		y = cnrbtree_generic_next( T, z ); 
+		y = cnrbtree_generic_next( z ); 
 
 		y_original_color = y->color;
 		cnrbtree_generic_node * tmp = y->right;
@@ -529,7 +528,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 				{
 					w->color = CNRBTREE_COLOR_BLACK;
 					xp->color = CNRBTREE_COLOR_RED;
-					cnrbtree_generic_rotateleft( T, xp );
+					cnrbtree_generic_rotateleft( xp );
 					w = xp->right;
 				}
 				if( ( w->left->color == CNRBTREE_COLOR_BLACK ) && 
@@ -544,13 +543,13 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 					{
 						w->left->color = CNRBTREE_COLOR_BLACK;
 						w->color = CNRBTREE_COLOR_RED;
-						cnrbtree_generic_rotateright( T, w );
+						cnrbtree_generic_rotateright( w );
 						w = xp->right;
 					}
 					w->color = x->parent->color;
 					xp->color = CNRBTREE_COLOR_BLACK;
 					w->right->color = CNRBTREE_COLOR_BLACK;
-					cnrbtree_generic_rotateleft( T, xp );
+					cnrbtree_generic_rotateleft( xp );
 					break;
 				}
 			}
@@ -562,7 +561,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 				{
 					w->color = CNRBTREE_COLOR_BLACK;
 					xp->color = CNRBTREE_COLOR_RED;
-					cnrbtree_generic_rotateright( T, xp );
+					cnrbtree_generic_rotateright( xp );
 					w = xp->left;
 				}
 				if( ( w->right->color == CNRBTREE_COLOR_BLACK ) && 
@@ -577,13 +576,13 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 					{
 						w->right->color = CNRBTREE_COLOR_BLACK;
 						w->color = CNRBTREE_COLOR_RED;
-						cnrbtree_generic_rotateleft( T, w );
+						cnrbtree_generic_rotateleft( w );
 						w = xp->left;
 					}
 					w->color = xp->color;
 					x->parent->color = CNRBTREE_COLOR_BLACK;
 					w->left->color = CNRBTREE_COLOR_BLACK;
-					cnrbtree_generic_rotateright( T, xp );
+					cnrbtree_generic_rotateright( xp );
 					break;
 				}
 			}
@@ -638,7 +637,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 #if CNRBTREE_TEMPLATECODE
 
 #define CNRBTREETEMPLATE( key_t, data_t, comparexy, copykeyxy, deletekeyxy ) \
-	CNRBTREETYPETEMPLATE( key_t, data_t ); \
+	CNRBTREETYPETEMPLATE( key_t, data_t ) \
 	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t##_node * cnrbtree_##key_t##data_t##_get2( cnrbtree_##key_t##data_t * tree, key_t key, int approx ) \
 	{\
 		cnrbtree_##key_t##data_t##_node * nil = (cnrbtree_##key_t##data_t##_node*)&cnrbtree_nil; \
@@ -744,7 +743,7 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 
 
 #define CNRBTREETEMPLATE_DEFINITION( key_t, data_t, comparexy, copykeyxy, deletekeyxy ) \
-	CNRBTREETYPETEMPLATE( key_t, data_t ); \
+	CNRBTREETYPETEMPLATE( key_t, data_t ) \
 	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t##_node * cnrbtree_##key_t##data_t##_get2( cnrbtree_##key_t##data_t * tree, key_t key, int approx ); \
 	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t##_node * cnrbtree_##key_t##data_t##_get( cnrbtree_##key_t##data_t * tree, key_t key ); \
 	CNRBTREE_TEMPLATE_DECORATOR cnrbtree_##key_t##data_t##_node * cnrbtree_##key_t##data_t##_access( cnrbtree_##key_t##data_t * tree, key_t key ); \
@@ -775,9 +774,9 @@ CNRBTREE_GENERIC_DECORATOR void cnrbtree_generic_removebase( cnrbtree_generic * 
 typedef void * rbset_t;
 typedef char rbset_null_t[0];
 #ifdef CNRBTREE_IMPLEMENTATION
-	CNRBTREETEMPLATE( rbset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBnullop );
+	CNRBTREETEMPLATE( rbset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBnullop )
 #else
-	CNRBTREETEMPLATE_DEFINITION( rbset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBnullop );
+	CNRBTREETEMPLATE_DEFINITION( rbset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBnullop )
 #endif
 
 typedef cnrbtree_rbset_trbset_null_t cnptrset;
@@ -789,18 +788,18 @@ typedef cnrbtree_rbset_trbset_null_t cnptrset;
 #define cnptrset_foreach( tree, i ) \
 	for( cnrbtree_rbset_trbset_null_t_node * node##i = tree->begin; \
 		(node##i != &cnrbtree_nil) && (i = (node##i)->key) != 0; \
-		node##i = (cnrbtree_rbset_trbset_null_t_node *)cnrbtree_generic_next( (cnrbtree_generic*)tree, (cnrbtree_generic_node *)node##i ) )
+		node##i = (cnrbtree_rbset_trbset_null_t_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)node##i ) )
 
 
 
 //Code for string-sets (cnstrset) - this is only for void *
 typedef char * rbstrset_t;
 #ifdef CNRBTREE_IMPLEMENTATION
-	CNRBTREETEMPLATE( rbstrset_t, rbset_null_t, RBstrcmp, RBstrcpy, RBstrdel );
-	CNRBTREETEMPLATE( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel );
+	CNRBTREETEMPLATE( rbstrset_t, rbset_null_t, RBstrcmp, RBstrcpy, RBstrdel )
+	CNRBTREETEMPLATE( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel )
 #else
-	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBstrdel );
-	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel );
+	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbset_null_t, RBptrcmp, RBptrcpy, RBstrdel )
+	CNRBTREETEMPLATE_DEFINITION( rbstrset_t, rbstrset_t, RBstrcmp, RBstrstrcpy, RBstrstrdel )
 #endif
 
 typedef cnrbtree_rbstrset_trbset_null_t cnstrset;
@@ -812,7 +811,7 @@ typedef cnrbtree_rbstrset_trbset_null_t cnstrset;
 #define cnstrset_foreach( tree, i ) \
 	for( cnrbtree_rbstrset_trbset_null_t_node * node##i = tree->begin; \
 		i = (node##i)->key, node##i != &cnrbtree_nil; \
-		node##i = (cnrbtree_rbstrset_trbset_null_t_node *)cnrbtree_generic_next( (cnrbtree_generic*)tree, (cnrbtree_generic_node *)node##i ) )
+		node##i = (cnrbtree_rbstrset_trbset_null_t_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)node##i ) )
 
 
 typedef cnrbtree_rbstrset_trbstrset_t cnstrstrmap;
@@ -824,7 +823,7 @@ typedef cnrbtree_rbstrset_trbstrset_t cnstrstrmap;
 #define cnstrstrmap_foreach( tree, i ) \
 	for( cnrbtree_rbstrset_trbstrset_t_node * node##i = tree->begin; \
 		i = (node##i)->key, node##i != &cnrbtree_nil; \
-		node##i = (cnrbtree_rbstrset_trbstrset_t_node *)cnrbtree_generic_next( (cnrbtree_generic*)tree, (cnrbtree_generic_node *)node##i ) )
+		node##i = (cnrbtree_rbstrset_trbstrset_t_node *)cnrbtree_generic_next( (cnrbtree_generic_node *)node##i ) )
 
 #endif
 
