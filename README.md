@@ -2,7 +2,7 @@
 
 <IMG SRC=https://github.com/cnlohr/cnrbtree/actions/workflows/build.yml/badge.svg>
 
-A fully-templated red black tree in C, which can be used as a dictionary or a set.  Like like stl map, in C, as a single-file header, with convenience functionality for strings, ints, and indexing.
+A fully-templated red black tree in C, which can be used as a dictionary or a set.  Like like stl map, as a single-file header, with convenience functionality for strings, ints, and indexing.
 
 It has a particular focus on versatility and runtime speed, at the cost of code size.  For instance, it uses the while-style operations instead of recursive operations for speed, and all things like pointer compares are templated into the macro-generated code instead of using function pointers.  Even though the code is under 1k LOC, it incurs additional code size per new dictionary-type you create.
 
