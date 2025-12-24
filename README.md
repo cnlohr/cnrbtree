@@ -106,3 +106,14 @@ int main()
 }
 ```
 
+## Design Notes
+
+I used MIT Press "Introduction to Algorithms" version, modified to use uncles, also a bit rearranged as an optimization.  Does not use recursion. Basically  from CLRS 3rd Edition; It's based off of Cormen's algorithm.  https://dpb.bitbucket.io/annotations-of-cormen-et-al-s-algorithm-for-a-red-black-tree-delete-and-delete-fixup-functions-only.html
+
+Major attractiveness:
+1. No recursion
+2. No special tail-recursion optimization required (which is MUCH slower on some compilers)
+3. No need to do complicated transplants/
+4. No need to copy data (this is evil if we're templating our types)
+
+I benchmarked all the "modern" recursive solutions against various compilers and they ranged from slightly (5%) to much (40%) worse.  So, I think any of the recursive red-black tree algos are not particularly useful.
