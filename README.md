@@ -18,10 +18,18 @@ All as a single-file header, which you can use like:
 It has a number of conveniences like `RBHAS` and `RBA` to, in a type-ambivelant way ask a tree if it has a specific element, or, to be able to inline access a specific element.
 
 ```c
-     if( RBHAS( mytree, mykey ) )
-        RBA( mytree, mykey )++;
+     if( RBHAS( mytree, mykey ) )  // O(log(n))
+        RBA( mytree, mykey )++;    // O(log(n))
      else
         RBA( mytree, mykey ) = 1;
+```
+
+You can also iterate over a list, in sorted order, because the tree naturally sorts everything:
+```c
+	RBFOREACH( mytree, i ) // O(1)
+	{
+		printf( "%s %s\n", i->key, i->data );
+	}
 ```
 
 While I've been using this library all over my programming professionally and personally since about 2019, that doesn't mean there can't be bugs.  If you find any, please report them, along with a repro if at all possible.
@@ -43,6 +51,8 @@ typedef struct object_t
 	int myvalue;
 } object;
 typedef char * str;
+
+// Define custom trees here.
 CNRBTREETEMPLATE( str, object, RBstrcmp, RBstrcpy, RBstrdel );
 
 int main()
