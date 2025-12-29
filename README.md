@@ -118,6 +118,10 @@ int main()
 }
 ```
 
+## Non-AI Note
+
+Code within this repository was written without the use or aide of AI-related tools (beyond basic google searches) and references used for implementation were before 2020.  No PRs will be accepted unless they are attested to be AI-free.
+
 ## Design Notes
 
 I used MIT Press "Introduction to Algorithms" version, modified to use uncles, also a bit rearranged as an optimization.  Does not use recursion. Basically  from CLRS 3rd Edition; It's based off of Cormen's algorithm.  https://dpb.bitbucket.io/annotations-of-cormen-et-al-s-algorithm-for-a-red-black-tree-delete-and-delete-fixup-functions-only.html
