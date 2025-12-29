@@ -120,7 +120,7 @@ int main()
 
 ## Non-AI Note
 
-Code within this repository was written without the use or aide of AI-related tools (beyond basic google searches) and references used for implementation were before 2020.  No PRs will be accepted unless they are attested to be made without the use of AI/LLMs.
+Code within this repository was written without the use or aid of AI-related tools (beyond basic internet searches) and references used for implementation were published prior to 2020.  No PRs will be accepted unless they are attested to be made without the use of AI/LLMs.
 
 ## Design Notes
 
